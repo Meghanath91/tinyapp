@@ -47,14 +47,16 @@ app.post("/urls", (req, res) => {
   let longURL = req.body['longURL'];
   urlDatabase[shortURL] = longURL;
   res.redirect(`/urls/${shortURL}`);
-
-  app.get("/u/:shortURL", (req, res) => {
-    res.redirect(urlDatabase[req.params.shortURL]);
-  });
 });
 
+app.get("/u/:shortURL", (req, res) => {
+  res.redirect(urlDatabase[req.params.shortURL]);
+});
 
-
+app.post("/urls/:shortURL/delete",(req,res) => {
+  delete urlDatabase[req.params.shortURL];
+  res.redirect(`/urls`)
+})
 
 const generateRandomString = function() {
   let result           = '';
