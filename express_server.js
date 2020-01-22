@@ -9,6 +9,20 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
+const users = { 
+  "userRandomID": {
+    id: "userRandomID", 
+    email: "user@example.com", 
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID", 
+    email: "user2@example.com", 
+    password: "dishwasher-funk"
+  }
+}
+
+
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -30,10 +44,10 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
-
-
 app.get("/urls", (req, res) => {
   let templateVars = { urls: urlDatabase,username: req.cookies["username"] };
+ // console.log(urlDatabase)
+ // console.log(templateVars)
   res.render("urls_index", templateVars);
 });
 
@@ -46,6 +60,7 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:shortURL",(req,res) => {
   let templateVars = {shortURL : req.params.shortURL,longURL: urlDatabase[req.params.shortURL],username: req.cookies["username"] };
+  //console.log(templateVars)
   res.render("urls_show",templateVars);
 });
 
@@ -83,20 +98,31 @@ app.post("/logout",(req,res)=>{
 })
 
 app.get("/register",(req,res)=>{
-  
   res.render("urls_register")
 
 })
 
-// app.post("/register",(req,res)=>{
-//   res.redirect('/urls')
-
-
+// app.get("/register.json", (req, res) => {
+//   res.json(usersDB);
+//   console.log(usersDB);
 // })
 
+// app.get("/register", (req, res) => {
+//   let templateVarsUser = { register: usersDB};
+//  // console.log(urlDatabase)
+//   console.log(templateVarsuser)
+//   res.render("urls_register", templateVarsUser);
+// });
 
 
+app.post("/register",(req,res) => {
 
+  let randomID = generateRandomString();
+  console.log("this is req.body",req.body)
+  users[randomID] = {id:randomID,email:req.body.email,password:req.body.password}
+  res.redirect('/urls')
+  console.log(users)
+})
 
 
 const generateRandomString = function() {
