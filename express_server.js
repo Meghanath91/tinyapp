@@ -30,6 +30,8 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
+
+
 app.get("/urls", (req, res) => {
   let templateVars = { urls: urlDatabase,username: req.cookies["username"] };
   res.render("urls_index", templateVars);
@@ -69,14 +71,28 @@ app.post("/urls/:shortURL",(req,res) => {
 
   res.redirect(`/urls`)
 })
+
 app.post("/login",(req,res)=>{
   res.cookie("username",req.body.username);
   res.redirect('/urls')
 })
+
 app.post("/logout",(req,res)=>{
   res.clearCookie("username")
   res.redirect('/urls')
 })
+
+app.get("/register",(req,res)=>{
+  
+  res.render("urls_register")
+
+})
+
+// app.post("/register",(req,res)=>{
+//   res.redirect('/urls')
+
+
+// })
 
 
 
