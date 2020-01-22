@@ -106,9 +106,17 @@ app.post("/register",(req,res) => {
 
   let randomID = generateRandomString();
   console.log("this is req.body",req.body)
-  res.cookie("user_id",randomID);
-  users[randomID] = {id:randomID,email:req.body.email,password:req.body.password}
-  res.redirect('/urls')
+  
+  if (req.body.email.length === 0 || req.body.password ===0){
+
+    res.send("empty email/password values, Error 400")
+    
+  } else {
+    users[randomID] = {id:randomID,email:req.body.email,password:req.body.password}
+    res.cookie("user_id",randomID);
+    res.redirect('/urls')
+  }
+  
 })
 
 
