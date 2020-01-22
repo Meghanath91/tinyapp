@@ -102,23 +102,11 @@ app.get("/register",(req,res)=>{
 
 })
 
-// app.get("/register.json", (req, res) => {
-//   res.json(usersDB);
-//   console.log(usersDB);
-// })
-
-// app.get("/register", (req, res) => {
-//   let templateVarsUser = { register: usersDB};
-//  // console.log(urlDatabase)
-//   console.log(templateVarsuser)
-//   res.render("urls_register", templateVarsUser);
-// });
-
-
 app.post("/register",(req,res) => {
 
   let randomID = generateRandomString();
   console.log("this is req.body",req.body)
+  res.cookie("user_id",randomID);
   users[randomID] = {id:randomID,email:req.body.email,password:req.body.password}
   res.redirect('/urls')
   console.log(users)
