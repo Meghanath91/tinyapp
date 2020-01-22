@@ -109,7 +109,6 @@ app.post("/register",(req,res) => {
   res.cookie("user_id",randomID);
   users[randomID] = {id:randomID,email:req.body.email,password:req.body.password}
   res.redirect('/urls')
-  console.log(users)
 })
 
 
