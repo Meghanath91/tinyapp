@@ -45,7 +45,7 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase,username: req.cookies["username"] };
+  let templateVars = { urls: urlDatabase,username: req.cookies["username"]}
  // console.log(urlDatabase)
  // console.log(templateVars)
   res.render("urls_index", templateVars);
@@ -53,13 +53,13 @@ app.get("/urls", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   let templateVars = {
-    username: req.cookies["username"],
+    username: req.cookies["user_id"]
   };
   res.render("urls_new",templateVars);
 });
 
 app.get("/urls/:shortURL",(req,res) => {
-  let templateVars = {shortURL : req.params.shortURL,longURL: urlDatabase[req.params.shortURL],username: req.cookies["username"] };
+  let templateVars = {shortURL : req.params.shortURL,longURL: urlDatabase[req.params.shortURL],username: req.cookies["user_id"],user_id:user_id };
   //console.log(templateVars)
   res.render("urls_show",templateVars);
 });
@@ -87,6 +87,10 @@ app.post("/urls/:shortURL",(req,res) => {
   res.redirect(`/urls`)
 })
 
+app.get("/login",(req,res)=>{
+  res.render(urls_login);
+})
+
 app.post("/login",(req,res)=>{
   res.cookie("username",req.body.username);
   res.redirect('/urls')
@@ -105,16 +109,20 @@ app.get("/register",(req,res)=>{
 app.post("/register",(req,res) => {
 
   let randomID = generateRandomString();
-  console.log("this is req.body",req.body)
+  //console.log("this is req.body",req.body)
+  console.log("this is user",users)
   
   if (req.body.email.length === 0 || req.body.password ===0){
 
     res.send("empty email/password values, Error 400")
     
+  } else if (emailLookUp(req.body.email)) {
+    res.send("user already exists, Error 400")
   } else {
     users[randomID] = {id:randomID,email:req.body.email,password:req.body.password}
     res.cookie("user_id",randomID);
     res.redirect('/urls')
+    console.log(users)
   }
   
 })
@@ -129,3 +137,14 @@ const generateRandomString = function() {
   }
   return result;
 };
+
+
+const emailLookUp = function(emailToCheck){
+  for(let element in users ){
+    if (emailToCheck === users[element]["email"]){
+      return true;
+    }
+  }
+  return false;
+  
+}
