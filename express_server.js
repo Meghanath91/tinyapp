@@ -132,7 +132,11 @@ app.post("/register",(req,res) => {
   } else if (emailLookUp(req.body.email)) {
     res.send("user already exists, Error 400");
   } else {
-    users[randomID] = {id:randomID,email:req.body.email,password:bcrypt.hashSync(req.body.password,10)};
+    users[randomID] = {
+      id:randomID,
+      email:req.body.email,
+      password:bcrypt.hashSync(req.body.password,10)
+    };
     res.cookie("user_id",randomID);
     res.redirect('/urls');
     console.log("this is user",users);
@@ -159,11 +163,8 @@ const emailLookUp = function(emailToCheck) {
 };
 
 const passwordChecker = function(user,passwordToCheck) {
-  if (passwordToCheck === user.password){
-    return true;
-    }
-    return false;
-  };
+  return bcrypt.compareSync(passwordToCheck,user.password)
+};
 
 const urlsForUser = function(CookieId){
   let UrlObj ={};
