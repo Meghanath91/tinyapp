@@ -89,12 +89,19 @@ app.get("/login",(req,res)=>{
 });
 
 app.post("/login",(req,res)=>{
-
+  let user = emailLookUp(req.body.email)
   if (req.body.email.length === 0 || req.body.password === 0) {
     res.send("empty email/password values, Error 400");
-  } else if (emailLookUp(req.body.email)) {
-    res.cookie("user_id",randomID);
-    res.redirect('/urls');
+
+  } else if (user) {
+    //todo check password
+    //todo retrieve the user id & put itinot the cookie
+    if(passwordChecker(user,req.body.password)){
+      res.cookie("user_id",users["user_id"]);
+      res.redirect('/urls');
+    } else {
+      res.send("invalid password");
+    }
   } else {
     res.redirect('/register');
   }
@@ -139,9 +146,16 @@ const generateRandomString = function() {
 const emailLookUp = function(emailToCheck) {
   for (let element in users) {
     if (emailToCheck === users[element]["email"]) {
-      return true;
+      return users[element];
     }
   }
   return false;
-  
 };
+
+const passwordChecker = function(user,passwordToCheck) {
+  
+    if(passwordToCheck === user.password){
+      return true;
+    }
+    return false;
+  }
