@@ -43,19 +43,20 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase,username: req.cookies["user_id"]};
+  
+  let templateVars = { urls: urlDatabase,user_id: req.cookies["user_id"]};
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
   let templateVars = {
-    username: req.cookies["user_id"]
+    user_id: req.cookies["user_id"]
   };
   res.render("urls_new",templateVars);
 });
 
 app.get("/urls/:shortURL",(req,res) => {
-  let templateVars = {shortURL : req.params.shortURL,longURL: urlDatabase[req.params.shortURL],username: req.cookies["user_id"]};
+  let templateVars = {shortURL : req.params.shortURL,longURL: urlDatabase[req.params.shortURL],user_id: req.cookies["user_id"]};
   //console.log(templateVars)
   res.render("urls_show",templateVars);
 });
@@ -64,6 +65,7 @@ app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
   let longURL = req.body['longURL'];
   urlDatabase[shortURL] = longURL;
+  
   res.redirect(`/urls/${shortURL}`);
 });
 
@@ -94,8 +96,6 @@ app.post("/login",(req,res)=>{
     res.send("empty email/password values, Error 400");
 
   } else if (user) {
-    //todo check password
-    //todo retrieve the user id & put itinot the cookie
     if(passwordChecker(user,req.body.password)){
       res.cookie("user_id",users["user_id"]);
       res.redirect('/urls');
@@ -153,9 +153,8 @@ const emailLookUp = function(emailToCheck) {
 };
 
 const passwordChecker = function(user,passwordToCheck) {
-  
-    if(passwordToCheck === user.password){
-      return true;
+  if (passwordToCheck === user.password){
+    return true;
     }
     return false;
   }
