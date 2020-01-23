@@ -7,6 +7,7 @@ app.set("view engine", "ejs");
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
+const bcrypt = require('bcrypt');
 
 const users = {
   "userRandomID": {
@@ -20,7 +21,6 @@ const users = {
     password: "123"
   }
 };
-
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
   i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
@@ -63,7 +63,7 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:shortURL",(req,res) => {
   let templateVars = {shortURL : req.params.shortURL,longURL: urlDatabase[req.params.shortURL].longURL,user_id: req.cookies["user_id"]};
-  console.log(templateVars)
+  //console.log(templateVars)
   res.render("urls_show",templateVars);
 });
 
@@ -127,15 +127,15 @@ app.get("/register",(req,res)=>{
 app.post("/register",(req,res) => {
 
   let randomID = generateRandomString();
-  //console.log("this is user",users);
   if (req.body.email.length === 0 || req.body.password === 0) {
     res.send("empty email/password values, Error 400");
   } else if (emailLookUp(req.body.email)) {
     res.send("user already exists, Error 400");
   } else {
-    users[randomID] = {id:randomID,email:req.body.email,password:req.body.password};
+    users[randomID] = {id:randomID,email:req.body.email,password:bcrypt.hashSync(req.body.password,10)};
     res.cookie("user_id",randomID);
     res.redirect('/urls');
+    console.log("this is user",users);
   }
 });
 
