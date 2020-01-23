@@ -1,18 +1,10 @@
-
-const emailLookUp = function(email){
-  
-  let existEmail = users.userid.email
-   console.log(existEmail)
-  for(let email of existEmail) {
- 
-     for(let existingProperty in userid){
- 
-       if(email === users.userid.existingProperty){
-         return true;
-       }
-       
- 
-     }
-     return false;
-   }
- };
+<% if (username) {%>
+  <form action="/logout" method="POST">
+    <button type="submit" class="btn btn-primary">LOGOUT</button>
+  </form>
+  <% }else {%>
+  <form action="/login" method="POST">
+    <input type="text" name="username" placeholder="Enter User Name">
+    <button type="submit" class="btn btn-primary">LOGIN</button>
+  </form>
+  <% }%>
