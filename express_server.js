@@ -45,13 +45,13 @@ app.get("/hello", (req, res) => {
 app.get("/urls", (req, res) => {
   const id = req.cookies["user_id"]; //userRandom
   const user = users[id];
-  
+
   if(user){
     let templateVars = { urls: urlsForUser(id),user_id:user.email};
     res.render("urls_index", templateVars);
   } else {
     res.redirect('/login')
-  }
+  };
 });
 
 app.get("/urls/new", (req, res) => {
@@ -80,6 +80,7 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.post("/urls/:shortURL/delete",(req,res) => {
+  
   delete urlDatabase[req.params.shortURL];
 
   res.redirect(`/urls`);
