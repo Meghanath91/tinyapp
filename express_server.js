@@ -5,7 +5,7 @@ const PORT = 8080; // default port 8080
 const cookieSession = require("cookie-session");// Encrypting Cookies
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");// Encrypting Password
-const {getUserByEmail, urlsForUser, passwordChecker} = require("./helpers");
+const {getUserByEmail, urlsForUser, passwordChecker, generateRandomString} = require("./helpers");
 //Model of Database for Users
 const users = {
   userRandomID: {
@@ -143,14 +143,3 @@ app.post("/register", (req, res) => {
     res.redirect("/urls");
   }
 });
-// #1 Function to generate Random string
-const generateRandomString = function() {
-  let result = "";
-  let characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let charactersLength = characters.length;
-  for (let i = 0; i < 6; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-};
