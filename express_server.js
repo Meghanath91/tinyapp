@@ -5,6 +5,7 @@ const PORT = 8080; // default port 8080
 const cookieSession = require("cookie-session");// Encrypting Cookies
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");// Encrypting Password
+const {getUserByEmail} = require("./helpers")
 //Model of Database for Users
 const users = {
   userRandomID: {
@@ -102,7 +103,7 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  let user = emailLookUp(req.body.email);
+  let user = getUserByEmail(req.body.email,users);
   if (req.body.email.length === 0 || req.body.password === 0) {
     res.send("empty email/password values, Error 400");
   } else if (user) {
@@ -113,7 +114,7 @@ app.post("/login", (req, res) => {
       res.send("invalid password");
     }
   } else {
-    res.send(`<font size="+4">Please Register</font>`)
+    res.send(`<font size="+3">Please Register</font>`)
   };
 });
 //#LOGOUT page
@@ -130,7 +131,7 @@ app.post("/register", (req, res) => {
   let randomID = generateRandomString();
   if (req.body.email.length === 0 || req.body.password === 0) {
     res.send(`empty email/password values,Error 400`);
-  } else if (emailLookUp(req.body.email)) {
+  } else if (getUserByEmail(req.body.email,users)) {
     res.send("user already exists, Error 400");
   } else {
     users[randomID] = {
@@ -140,7 +141,7 @@ app.post("/register", (req, res) => {
     };
     req.session.user_id = randomID;
     res.redirect("/urls");
-    console.log("this is user", users);
+    //console.log("this is user", users);
   }
 });
 // #1 Function to generate Random string
@@ -154,15 +155,7 @@ const generateRandomString = function() {
   }
   return result;
 };
-//#2 Function to check email exist
-const emailLookUp = function(emailToCheck) {
-  for (let element in users) {
-    if (emailToCheck === users[element]["email"]) {
-      return users[element];
-    }
-  }
-  return false;
-};
+
 //#3 function to check passwords match
 const passwordChecker = function(user, passwordToCheck) {
   return bcrypt.compareSync(passwordToCheck, user.password);
