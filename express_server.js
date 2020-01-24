@@ -2,11 +2,7 @@ const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 const cookieSession = require('cookie-session');
-
-app.set("view engine", "ejs");
-
 const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({extended: true}));
 const bcrypt = require('bcrypt');
 
 const users = {
@@ -21,10 +17,15 @@ const users = {
     password: "123"
   }
 };
+
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
   i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
 };
+
+app.set("view engine", "ejs");
+
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(cookieSession({
   name: 'session',
