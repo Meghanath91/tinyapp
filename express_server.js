@@ -5,7 +5,7 @@ const PORT = 8080; // default port 8080
 const cookieSession = require("cookie-session");// Encrypting Cookies
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");// Encrypting Password
-const {getUserByEmail,urlsForUser} = require("./helpers");
+const {getUserByEmail, urlsForUser, passwordChecker} = require("./helpers");
 //Model of Database for Users
 const users = {
   userRandomID: {
@@ -154,9 +154,3 @@ const generateRandomString = function() {
   }
   return result;
 };
-
-//#3 function to check passwords match
-const passwordChecker = function(user, passwordToCheck) {
-  return bcrypt.compareSync(passwordToCheck, user.password);
-};
-

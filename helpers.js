@@ -1,3 +1,4 @@
+const bcrypt = require("bcrypt");// Encrypting Password
 //#2 Function to check email exist
 const getUserByEmail = function(emailToCheck,database) {
   for (let user in database) {
@@ -7,6 +8,12 @@ const getUserByEmail = function(emailToCheck,database) {
   }
   return false;
 };
+//#3 function to check passwords match
+const passwordChecker = function(user, passwordToCheck) {
+  return bcrypt.compareSync(passwordToCheck, user.password);
+};
+
+
 //#4 function to return URLs for particular user/unique id
 const urlsForUser = function(CookieId,urlDatabase) {
   let UrlObj = {};
@@ -18,4 +25,4 @@ const urlsForUser = function(CookieId,urlDatabase) {
   return UrlObj;
 };
 
-module.exports = {getUserByEmail,urlsForUser }
+module.exports = {getUserByEmail, urlsForUser, passwordChecker }
