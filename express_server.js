@@ -5,7 +5,7 @@ const PORT = 8080; // default port 8080
 const cookieSession = require("cookie-session");// Encrypting Cookies
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");// Encrypting Password
-const {getUserByEmail} = require("./helpers")
+const {getUserByEmail,urlsForUser} = require("./helpers");
 //Model of Database for Users
 const users = {
   userRandomID: {
@@ -50,7 +50,7 @@ app.get("/urls", (req, res) => {
 
   if (user) {
     let templateVars = {
-      urls: urlsForUser(id),
+      urls: urlsForUser(id,urlDatabase),
       email: users[req.session["user_id"]].email
     };
     res.render("urls_index", templateVars);
@@ -114,8 +114,8 @@ app.post("/login", (req, res) => {
       res.send("invalid password");
     }
   } else {
-    res.send(`<font size="+3">Please Register</font>`)
-  };
+    res.send(`<font size="+3">Please Register</font>`);
+  }
 });
 //#LOGOUT page
 app.post("/logout", (req, res) => {
@@ -141,7 +141,6 @@ app.post("/register", (req, res) => {
     };
     req.session.user_id = randomID;
     res.redirect("/urls");
-    //console.log("this is user", users);
   }
 });
 // #1 Function to generate Random string
@@ -160,13 +159,4 @@ const generateRandomString = function() {
 const passwordChecker = function(user, passwordToCheck) {
   return bcrypt.compareSync(passwordToCheck, user.password);
 };
-//# function to return URLs for particular user/unique id
-const urlsForUser = function(CookieId) {
-  let UrlObj = {};
-  for (let element in urlDatabase) {
-    if (urlDatabase[element].userID === CookieId) {
-      UrlObj[element] = urlDatabase[element];
-    }
-  }
-  return UrlObj;
-};
+

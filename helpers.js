@@ -7,4 +7,15 @@ const getUserByEmail = function(emailToCheck,database) {
   }
   return false;
 };
-module.exports = { getUserByEmail }
+//#4 function to return URLs for particular user/unique id
+const urlsForUser = function(CookieId,urlDatabase) {
+  let UrlObj = {};
+  for (let element in urlDatabase) {
+    if (urlDatabase[element].userID === CookieId) {
+      UrlObj[element] = urlDatabase[element];
+    }
+  }
+  return UrlObj;
+};
+
+module.exports = {getUserByEmail,urlsForUser }
