@@ -1,12 +1,13 @@
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
-const cookieParser = require("cookie-parser");
+const cookieSession = require('cookie-session');
+//const cookieParser = require("cookie-parser");
 app.set("view engine", "ejs");
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser());
+//app.use(cookieParser());
 const bcrypt = require('bcrypt');
 
 const users = {
@@ -26,6 +27,14 @@ const urlDatabase = {
   i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
 };
 
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1','keys2'],
+
+  // Cookie Options
+ // maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -43,11 +52,14 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  const id = req.cookies["user_id"]; //userRandom
+  const id = req.session["user_id"]; //userRandom
   const user = users[id];
 
   if(user){
-    let templateVars = { urls: urlsForUser(id),user_id:user.email};
+    let templateVars = { 
+      urls: urlsForUser(id),
+      email:users[req.session["user_id"]].email
+    };
     res.render("urls_index", templateVars);
   } else {
     res.redirect('/login')
@@ -56,13 +68,19 @@ app.get("/urls", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   let templateVars = {
-    user_id: req.cookies["user_id"]
+    user_id: req.session["user_id"],
+    email : users[req.session["user_id"]].email
   };
   res.render("urls_new",templateVars);
 });
 
 app.get("/urls/:shortURL",(req,res) => {
-  let templateVars = {shortURL : req.params.shortURL,longURL: urlDatabase[req.params.shortURL].longURL,user_id: req.cookies["user_id"]};
+  let templateVars = {
+    shortURL : req.params.shortURL,
+    longURL: urlDatabase[req.params.shortURL].longURL,
+    user_id: req.session["user_id"],
+    email: users[req.session["user_id"]].email
+  };
   //console.log(templateVars)
   res.render("urls_show",templateVars);
 });
@@ -70,7 +88,7 @@ app.get("/urls/:shortURL",(req,res) => {
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
   let longURL = req.body['longURL'];
-  urlDatabase[shortURL] = { longURL: longURL, userID: req.cookies["user_id" ]}
+  urlDatabase[shortURL] = { longURL: longURL, userID: req.session["user_id" ]}
   
   res.redirect(`/urls/${shortURL}`);
 });
@@ -105,8 +123,9 @@ app.post("/login",(req,res)=>{
 
   } else if (user) {
     if(passwordChecker(user,req.body.password)){
-      res.cookie("user_id",user.id);
-      res.redirect('/urls');
+     // res.session("user_id",user.id);
+     req.session.user_id = user.id; 
+     res.redirect('/urls');
     } else {
       res.send("invalid password");
     }
@@ -116,7 +135,7 @@ app.post("/login",(req,res)=>{
 });
 
 app.post("/logout",(req,res)=>{
-  res.clearCookie("user_id");
+  req.session = null;
   res.redirect('/urls');
 });
 
@@ -137,7 +156,8 @@ app.post("/register",(req,res) => {
       email:req.body.email,
       password:bcrypt.hashSync(req.body.password,10)
     };
-    res.cookie("user_id",randomID);
+    //res.session("user_id",randomID);
+    req.session.user_id = randomID
     res.redirect('/urls');
     console.log("this is user",users);
   }
