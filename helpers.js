@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");// Encrypting Password
+const bcrypt = require("bcrypt"); // Encrypting Password
 // #1 Function to generate Random string
 const generateRandomString = function() {
   let result = "";
@@ -11,7 +11,7 @@ const generateRandomString = function() {
   return result;
 };
 //#2 Function to check email exist
-const getUserByEmail = function(emailToCheck,database) {
+const getUserByEmail = function(emailToCheck, database) {
   for (let user in database) {
     if (emailToCheck === database[user]["email"]) {
       return database[user];
@@ -24,9 +24,8 @@ const passwordChecker = function(user, passwordToCheck) {
   return bcrypt.compareSync(passwordToCheck, user.password);
 };
 
-
 //#4 function to return URLs for particular user/unique id
-const urlsForUser = function(CookieId,urlDatabase) {
+const urlsForUser = function(CookieId, urlDatabase) {
   let UrlObj = {};
   for (let element in urlDatabase) {
     if (urlDatabase[element].userID === CookieId) {
@@ -36,4 +35,9 @@ const urlsForUser = function(CookieId,urlDatabase) {
   return UrlObj;
 };
 
-module.exports = {getUserByEmail, urlsForUser, passwordChecker, generateRandomString }
+module.exports = {
+  getUserByEmail,
+  urlsForUser,
+  passwordChecker,
+  generateRandomString
+};

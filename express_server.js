@@ -2,10 +2,15 @@
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
-const cookieSession = require("cookie-session");// Encrypting Cookies
+const cookieSession = require("cookie-session"); // Encrypting Cookies
 const bodyParser = require("body-parser");
-const bcrypt = require("bcrypt");// Encrypting Password
-const {getUserByEmail, urlsForUser, passwordChecker, generateRandomString} = require("./helpers");
+const bcrypt = require("bcrypt"); // Encrypting Password
+const {
+  getUserByEmail,
+  urlsForUser,
+  passwordChecker,
+  generateRandomString
+} = require("./helpers");//import functions as objects from helpers.js
 //Model of Database for Users
 const users = {
   userRandomID: {
@@ -50,7 +55,7 @@ app.get("/urls", (req, res) => {
 
   if (user) {
     let templateVars = {
-      urls: urlsForUser(id,urlDatabase),
+      urls: urlsForUser(id, urlDatabase),
       email: users[req.session["user_id"]].email
     };
     res.render("urls_index", templateVars);
@@ -103,7 +108,7 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  let user = getUserByEmail(req.body.email,users);
+  let user = getUserByEmail(req.body.email, users);
   if (req.body.email.length === 0 || req.body.password === 0) {
     res.send("empty email/password values, Error 400");
   } else if (user) {
@@ -131,7 +136,7 @@ app.post("/register", (req, res) => {
   let randomID = generateRandomString();
   if (req.body.email.length === 0 || req.body.password === 0) {
     res.send(`empty email/password values,Error 400`);
-  } else if (getUserByEmail(req.body.email,users)) {
+  } else if (getUserByEmail(req.body.email, users)) {
     res.send("user already exists, Error 400");
   } else {
     users[randomID] = {
