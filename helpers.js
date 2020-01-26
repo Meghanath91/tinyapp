@@ -10,7 +10,7 @@ const generateRandomString = function() {
   }
   return result;
 };
-//#2 Function to check email exist
+//#2 Function to get user data using email
 const getUserByEmail = function(emailToCheck, database) {
   for (let user in database) {
     if (emailToCheck === database[user]["email"]) {
