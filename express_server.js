@@ -111,7 +111,7 @@ app.get("/register", (req, res) => {
   res.render("urls_register");
 });
 
-//===========================GET REQUESTS==========================================
+//===========================POST REQUESTS==========================================
 //creating a new short url for a given longURL
 app.post("/urls", (req, res) => {
   if (req.body["longURL"].length) {
